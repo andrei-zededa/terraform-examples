@@ -34,9 +34,16 @@ resource "zedcloud_edgenode" "EDGE_NODE_1" {
   model_id       = zedcloud_model.VM_WITH_MANY_PORTS.id
   project_id     = zedcloud_project.PROJECT_1.id
   # utype          = "AMD64"
-  # The TF provider SHOULD know how to do 2 API requests if needed to set a
+  # The TF provider knows how to do 2 API requests if needed to set a
   # newly created edge node to ADMIN_STATE_ACTIVE.
   admin_state = "ADMIN_STATE_ACTIVE"
+
+  # This is needed as the edge-node will be moved to this project prior to
+  # being destroyed. We want to ensure that the edge-node is destroyed before
+  # trying to destroy that project.
+  depends_on = [
+    zedcloud_project.edge_nodes_to_be_deleted
+  ]
 
   interfaces {
     intfname = "first_physical_intf" # Must match the logical label defined in the model.
@@ -82,7 +89,7 @@ resource "null_resource" "edge_node_pre_destroy_hook" {
   }
 
   provisioner "local-exec" {
-    when = destroy
-    command = "./scripts/move_edge_node_to_project.sh ${self.triggers.node} ${self.triggers.proj}" 
+    when    = destroy
+    command = "./scripts/move_edge_node_to_project.sh ${self.triggers.node} ${self.triggers.proj}"
   }
 }
