@@ -1,0 +1,173 @@
+{
+    "acKind": "VMManifest",
+    "acVersion": "1.2.0",
+    "name": "ubuntu_3nic_test_aaaa",
+    "displayName": "",
+    "description": "",
+    "owner": {
+        "user": "Andrei Radu",
+        "group": "",
+        "company": "",
+        "website": "help.zededa.com",
+        "email": "help@zededa.com"
+    },
+    "desc": {
+        "category": "APP_CATEGORY_DEVOPS",
+        "os": "",
+        "appCategory": "APP_CATEGORY_UNSPECIFIED",
+        "logo": {},
+        "screenshotList": {},
+        "licenseList": {},
+        "support": "",
+        "agreementList": {}
+    },
+    "images": [
+        {
+            "imagename": "ubuntu_24_04_with_modbus_disk_999MB",
+            "imageid": "9c02df13-73b6-4abb-b543-246bcb161420",
+            "imageformat": "QCOW2",
+            "maxsize": "10485760",
+            "preserve": false,
+            "target": "Disk",
+            "drvtype": "HDD",
+            "params": [],
+            "readonly": false,
+            "volumelabel": "",
+            "ignorepurge": true,
+            "cleartext": true,
+            "mountpath": "/"
+        }
+    ],
+    "interfaces": [
+        {
+            "name": "1st_conn_port_fwd",
+            "type": "",
+            "optional": false,
+            "directattach": false,
+            "privateip": false,
+            "acls": [
+                {
+                    "matches": [
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [],
+                    "name": ""
+                },
+                {
+                    "matches": [
+                        {
+                            "type": "protocol",
+                            "value": "tcp"
+                        },
+                        {
+                            "type": "lport",
+                            "value": "10022"
+                        },
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "drop": false,
+                            "limit": false,
+                            "limitValue": null,
+                            "limitrate": 0,
+                            "limitunit": "",
+                            "limitburst": 0,
+                            "portmap": true,
+                            "portmapto": {
+                                "appPort": 22
+                            }
+                        }
+                    ],
+                    "name": ""
+                }
+            ]
+        },
+        {
+            "name": "2nd_conn",
+            "type": "",
+            "optional": false,
+            "directattach": false,
+            "privateip": false,
+            "acls": [
+                {
+                    "matches": [
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [],
+                    "name": ""
+                }
+            ]
+        },
+        {
+            "name": "3rd_conn",
+            "type": "",
+            "optional": false,
+            "directattach": false,
+            "privateip": false,
+            "acls": [
+                {
+                    "matches": [
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [],
+                    "name": ""
+                }
+            ]
+        }
+    ],
+    "permissions": [],
+    "vmmode": "HV_HVM",
+    "enablevnc": true,
+    "resources": [
+        {
+            "name": "resourceType",
+            "value": "Custom"
+        },
+        {
+            "name": "cpus",
+            "value": "1"
+        },
+        {
+            "name": "memory",
+            "value": "1048576.00"
+        },
+        {
+            "name": "storage",
+            "value": "10485760.00"
+        }
+    ],
+    "configuration": {
+        "customConfig": {
+            "name": "",
+            "add": false,
+            "override": false,
+            "allowStorageResize": false,
+            "fieldDelimiter": "",
+            "template": "",
+            "variableGroups": []
+        }
+    },
+    "containerDetail": null,
+    "module": {
+        "twinDetail": "",
+        "routes": {},
+        "environment": {},
+        "moduleType": "MODULE_TYPE_UNSPECIFIED"
+    },
+    "appType": "APP_TYPE_VM",
+    "deploymentType": "DEPLOYMENT_TYPE_STAND_ALONE",
+    "cpuPinningEnabled": false
+}
