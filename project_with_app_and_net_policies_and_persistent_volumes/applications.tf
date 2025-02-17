@@ -37,13 +37,53 @@ resource "zedcloud_application" "ubuntu_3nic_test_bbbb" {
     images {
       cleartext   = true
       drvtype     = "HDD"
-      ignorepurge = true
       imageformat = "QCOW2"
       imageid     = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.id
       imagename   = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.name
       maxsize     = "10485760"
       mountpath   = "/"
+      ignorepurge = true
       preserve    = false
+      readonly    = false
+      target      = "Disk"
+    }
+
+    # This *image* defines a *second disk* (apart from the *boot disk* defined
+    # above (that *image* above will be boot disk in the case of applications
+    # of type VM and root file-system in the case of applications of type container).
+    #
+    # This *second disk* will be presented as a VIRTIO disk to VMs and it will
+    # be mounted at the `mountpath` specified below for containers (`mountpath`
+    # is ignored for VMs).
+    images {
+      # The *volume label* selects which volume-instance will be selected when
+      # the edge-app-instance is created and started on an edge-node. That
+      # volume-instance MUST already exist on the edge-node. In the case of
+      # edge-app-instances created automatically as a result of a project
+      # app policy one must ensure that the volume-instance is created on the
+      # edge-node BEFORE it joins the project, otherwise the creation of the
+      # edge-app-instances will fail.
+      #
+      # NOTE: A volume-instance definition can include both a *label* and
+      # *tags*. In other for an edge-app-instance with this application to be
+      # deployed correctly on an edge-node the volume-instance MUST be created
+      # with `label = "volume_color_red"`, for example if a volume-instance is
+      # also created with terraform it can have the following configuration,
+      # again only the `label` is used for this, not the `tags`.
+      #
+      # ```
+      #     label = "volume_color_red"
+      #     tags = {
+      #       volume_color_red = "red"
+      #     }
+      # ```
+      volumelabel = "volume_color_red"
+      cleartext   = true
+      drvtype     = "HDD"
+      imageformat = "QCOW2"
+      mountpath   = "/data"
+      ignorepurge = false
+      preserve    = true
       readonly    = false
       target      = "Disk"
     }

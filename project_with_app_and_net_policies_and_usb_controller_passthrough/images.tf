@@ -1,19 +1,24 @@
-# This already exists, we can either use a data block or import it. 
-# terraform import zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB e5f9f886-03b6-43b1-b64e-e288702c24d7
 resource "zedcloud_image" "ubuntu_24_04_with_modbus_disk_999MB" {
   name  = "ubuntu_24_04_with_modbus_disk_999MB"
   title = "ubuntu_24_04_with_modbus_disk_999MB"
 
-  # This creates an implicit dependency on the `zedcloud_datastore.Local-HTTP-Server-8080` resource
-  # so a block like:
+  # This creates an implicit dependency on the `zedcloud_datastore.Local_HTTP_Server_8080`
+  # resource, so a block like:
   #     depends_on = [
-  #       zedcloud_datastore.Local-HTTP-Server-8080
+  #       zedcloud_datastore.Local_HTTP_Server_8080
   #     ]
   # is not needed.
-  datastore_id = zedcloud_datastore.Local-HTTP-Server-8080.id
+  datastore_id = zedcloud_datastore.Local_HTTP_Server_8080.id
+  # NOTE: Currently both `datastore_id` and `datastore_id_list` are needed even
+  # though it's the same information.
+  datastore_id_list = [
+    zedcloud_datastore.Local_HTTP_Server_8080.id
+  ]
 
-  # The resulting URL for downloading the image will be:
+  # The resulting URL for downloading the image will calculated by the edge-node as: 
   #     ${ds_fqdn}/${ds_path}/${image_rel_url}
+  #
+  # So in this case, considering the `Local_HTTP_Server_8080` datastore it will be:
   #     http://192.168.192.168:8080/images_datastore/ubuntu_24_04_with_modbus_disk_999MB.qcow2
   image_rel_url    = "ubuntu_24_04_with_modbus_disk_999MB.qcow2"
   image_format     = "QCOW2"

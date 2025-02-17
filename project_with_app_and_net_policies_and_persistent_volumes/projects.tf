@@ -1,13 +1,17 @@
+# project_unique: Useful if testing this configuration multiple times in the
+# same enterprise, to generate unique objects since in Zedcloud the `name` of
+# each object must also be unique (apart from the `ID` which is obviously unique).
 variable "project_unique" {
   description = "The unique part of the project name and or other related resource names"
   type        = string
-  default     = "AAAABBBB1234CI571" # Also used as the edge node serial number.
+  default     = "XXX123"
 }
 
+# project_name: We need this for multiple fields/attributes of the project.
 variable "project_name" {
   description = "The project name"
   type        = string
-  default     = "PROJ_AAAABBBB1234CI571_FROM_TF"
+  default     = "PROJ_XXX123_FROM_TF"
 }
 
 resource "zedcloud_project" "PROJECT_1" {
@@ -209,27 +213,5 @@ resource "zedcloud_project" "PROJECT_1" {
         }
       }
     }
-  }
-}
-
-# An edge-node that has app-instances and/or network-instances deployed to it
-# cannot be deleted without first deleting those. However if those where deployed
-# automatically as a result of the parent project's app/network policies then
-# terraform is not aware of them to be able to destroy them. Therefore we create
-# this empty project and before wanting to destroy an edge-node we first move
-# it to this project so the app/network-instances are deleted automatically by
-# Zedcloud.
-resource "zedcloud_project" "edge_nodes_to_be_deleted" {
-  name        = "edge_nodes_to_be_deleted_${var.project_unique}_FROM_TF"
-  title       = "edge_nodes_to_be_deleted_${var.project_unique}_FROM_TF"
-  description = <<-EOS
-  Project ${var.project_unique} for edge nodes that need to be
-   moved before deletion to a project without app/network policies.
-  EOS
-
-  type = "TAG_TYPE_PROJECT"
-  tag_level_settings {
-    flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
-    interface_ordering    = "INTERFACE_ORDERING_DISABLED"
   }
 }
