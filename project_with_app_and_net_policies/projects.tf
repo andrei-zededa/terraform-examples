@@ -222,10 +222,10 @@ resource "zedcloud_project" "PROJECT_1" {
 resource "zedcloud_project" "edge_nodes_to_be_deleted" {
   name        = "edge_nodes_to_be_deleted_${var.project_unique}_FROM_TF"
   title       = "edge_nodes_to_be_deleted_${var.project_unique}_FROM_TF"
-  description = <<-EOS
-  Project ${var.project_unique} for edge nodes that need to be
+  description = <<-EOF
+  Project ${var.project_unique} for edge-nodes that need to be
    moved before deletion to a project without app/network policies.
-  EOS
+  EOF
 
   type = "TAG_TYPE_PROJECT"
   tag_level_settings {

@@ -38,9 +38,9 @@ resource "zedcloud_edgenode" "EDGE_NODE_1" {
   # newly created edge node to ADMIN_STATE_ACTIVE.
   admin_state = "ADMIN_STATE_ACTIVE"
 
-  # This is needed as the edge-node will be moved to this project prior to
-  # being destroyed. We want to ensure that the edge-node is destroyed before
-  # trying to destroy that project.
+  # This is needed as the edge-node will be moved to this project prior to being
+  # destroyed. We want to ensure that the edge-node is destroyed before the "to
+  # be deleted" project.
   depends_on = [
     zedcloud_project.edge_nodes_to_be_deleted
   ]
@@ -79,9 +79,9 @@ resource "zedcloud_edgenode" "EDGE_NODE_1" {
   tags = {}
 }
 
-# This is used to move an edge-node to the *to be deleted* project before that
-# edge-node is to be destroyed. It's used as a *pre-destroy hook* for that
-# respective edge-node.
+# This is used as a *pre-destroy hook* to move an edge-node to the *to be deleted*
+# project before that edge-node is to destroyed. It is ""attached"" to the respective
+# edge-node resource due do it's trigger definition.
 resource "null_resource" "edge_node_pre_destroy_hook" {
   triggers = {
     node = zedcloud_edgenode.EDGE_NODE_1.id
