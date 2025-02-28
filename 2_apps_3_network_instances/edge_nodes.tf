@@ -10,6 +10,10 @@ resource "zedcloud_network" "edge_node_as_dhcp_client" {
   title = "edge_node_as_dhcp_client_PROJ_${var.project_unique}"
   kind  = "NETWORK_KIND_V4"
 
+  depends_on = [
+    zedcloud_project.PROJECT_1
+  ]
+
   project_id = zedcloud_project.PROJECT_1.id
 
   ip {
@@ -26,26 +30,21 @@ locals {
   ][0]
 }
 
-resource "zedcloud_edgenode" "EDGE_NODES" {
-  for_each = local.devices_map
-
-  name           = "${each.value.name}_${var.project_unique}_FROM_TF"
-  title          = "${each.value.name}_${var.project_unique}_FROM_TF"
-  serialno       = each.value.serial_number
+resource "zedcloud_edgenode" "EDGE_NODE_1" {
+  name           = "EDGE_NODE_${var.project_unique}_FROM_TF"
+  title          = "EDGE_NODE_${var.project_unique}_FROM_TF"
+  serialno       = var.project_unique
   onboarding_key = var.onboarding_key
   model_id       = zedcloud_model.VM_WITH_MANY_PORTS.id
-  # project_id     = zedcloud_project.edge_nodes_staging.id
-  project_id = zedcloud_project.PROJECT_1.id
+  project_id     = zedcloud_project.PROJECT_1.id
   # utype          = "AMD64"
-  # The TF provider knows how to do 2 API requests if needed to set a
+  # The TF provider SHOULD know how to do 2 API requests if needed to set a
   # newly created edge node to ADMIN_STATE_ACTIVE.
   admin_state = "ADMIN_STATE_ACTIVE"
 
-  # This is needed as the edge-node will be moved to this project prior to being
-  # destroyed. We want to ensure that the edge-node is destroyed before the "to
-  # be deleted" project.
   depends_on = [
-    zedcloud_project.edge_nodes_to_be_deleted
+    zedcloud_project.PROJECT_1,
+    zedcloud_network.edge_node_as_dhcp_client
   ]
 
   interfaces {
@@ -80,23 +79,4 @@ resource "zedcloud_edgenode" "EDGE_NODES" {
   }
 
   tags = {}
-}
-
-# This is used as a *pre-destroy hook* to move an edge-node to the *to be deleted*
-# project before that edge-node is to destroyed. It is ""attached"" to the respective
-# edge-node resource due do it's trigger definition.
-resource "null_resource" "edge_node_pre_destroy_hook" {
-  # Create an instance of this resource for each edge-node.
-  # `for_each = zedcloud_edgenode.EDGE_NODES` - would not work due to unknown info before apply.
-  for_each = local.devices_map
-
-  triggers = {
-    node = zedcloud_edgenode.EDGE_NODES[each.key].id
-    proj = zedcloud_project.edge_nodes_to_be_deleted.id
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "./scripts/move_edge_node_to_project.sh ${self.triggers.node} ${self.triggers.proj}"
-  }
 }

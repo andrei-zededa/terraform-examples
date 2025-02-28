@@ -48,20 +48,20 @@ resource "zedcloud_application" "ubuntu_3nic_test_bbbb" {
       target      = "Disk"
     }
 
-    #     images {
-    #       volumelabel = "volume_color_red"
-    #       cleartext   = true
-    #       drvtype     = "HDD"
-    #       imageformat = "QCOW2"
-    #       # imageid     = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.id
-    #       # imagename   = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.name
-    #       # maxsize     = "10485760"
-    #       mountpath   = "/data"
-    #       ignorepurge = false
-    #       preserve    = true
-    #       readonly    = false
-    #       target      = "Disk"
-    #     }
+    images {
+      volumelabel = "volume_color_red"
+      cleartext   = true
+      drvtype     = "HDD"
+      imageformat = "QCOW2"
+      # imageid     = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.id
+      # imagename   = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.name
+      # maxsize     = "10485760"
+      mountpath   = "/data"
+      ignorepurge = false
+      preserve    = true
+      readonly    = false
+      target      = "Disk"
+    }
 
     interfaces {
       directattach = false

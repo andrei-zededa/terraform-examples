@@ -18,6 +18,19 @@ resource "zedcloud_network" "edge_node_as_dhcp_client" {
   mtu = 1500
 }
 
+resource "zedcloud_network" "edge_node_as_dhcp_client_staging" {
+  name  = "edge_node_as_dhcp_client_staging_${var.project_unique}"
+  title = "edge_node_as_dhcp_client_staging_${var.project_unique}"
+  kind  = "NETWORK_KIND_V4"
+
+  project_id = zedcloud_project.edge_nodes_staging.id
+
+  ip {
+    dhcp = "NETWORK_DHCP_TYPE_CLIENT"
+  }
+  mtu = 1500
+}
+
 locals {
   # Filter and extract the value
   model_eth1_logical_label = [
@@ -34,8 +47,7 @@ resource "zedcloud_edgenode" "EDGE_NODES" {
   serialno       = each.value.serial_number
   onboarding_key = var.onboarding_key
   model_id       = zedcloud_model.VM_WITH_MANY_PORTS.id
-  # project_id     = zedcloud_project.edge_nodes_staging.id
-  project_id = zedcloud_project.PROJECT_1.id
+  project_id     = zedcloud_project.edge_nodes_staging.id
   # utype          = "AMD64"
   # The TF provider knows how to do 2 API requests if needed to set a
   # newly created edge node to ADMIN_STATE_ACTIVE.
@@ -45,6 +57,8 @@ resource "zedcloud_edgenode" "EDGE_NODES" {
   # destroyed. We want to ensure that the edge-node is destroyed before the "to
   # be deleted" project.
   depends_on = [
+    zedcloud_project.edge_nodes_staging,
+    zedcloud_project.PROJECT_1,
     zedcloud_project.edge_nodes_to_be_deleted
   ]
 
@@ -80,6 +94,30 @@ resource "zedcloud_edgenode" "EDGE_NODES" {
   }
 
   tags = {}
+}
+
+# Edge-node post-creation hook.
+resource "null_resource" "edge_node_post_create_hook" {
+  # Create an instance of this resource for each edge-node.
+  # `for_each = zedcloud_edgenode.EDGE_NODES` - would not work due to unknown info before apply.
+  for_each = local.devices_map
+
+  triggers = {
+    node = zedcloud_edgenode.EDGE_NODES[each.key].id
+    vol  = lookup(local.allow_volume_destroy, each.key, false) ? zedcloud_volume_instance.DESTROYABLE_PER_EDGE_NODE_VOLUMES_COLOR_RED[each.key].id : zedcloud_volume_instance.PROTECTED_PER_EDGE_NODE_VOLUMES_COLOR_RED[each.key].id
+    proj = zedcloud_project.PROJECT_1.id
+
+    # This ensures the hook only runs once. It will never match after first creation.
+    run_once = uuid()
+  }
+
+  provisioner "local-exec" {
+    command = "./scripts/move_edge_node_to_project.sh ${self.triggers.node} ${self.triggers.proj}"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # This is used as a *pre-destroy hook* to move an edge-node to the *to be deleted*

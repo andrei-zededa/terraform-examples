@@ -1,13 +1,13 @@
 variable "project_unique" {
   description = "The unique part of the project name and or other related resource names"
   type        = string
-  default     = "XXX123" # Also used as the edge node serial number.
+  default     = "AAAABBBB1234CI571" # Also used as the edge node serial number.
 }
 
 variable "project_name" {
   description = "The project name"
   type        = string
-  default     = "PROJ_XXX123_FROM_TF"
+  default     = "PROJ_AAAABBBB1234CI571_FROM_TF"
 }
 
 resource "zedcloud_project" "PROJECT_1" {
@@ -209,6 +209,22 @@ resource "zedcloud_project" "PROJECT_1" {
         }
       }
     }
+  }
+}
+
+# An edge-node is first joined to this project.
+resource "zedcloud_project" "edge_nodes_staging" {
+  name        = "edge_nodes_staging_${var.project_unique}_FROM_TF"
+  title       = "edge_nodes_staging_${var.project_unique}_FROM_TF"
+  description = <<-EOF
+  Project ${var.project_unique} for edge-nodes that need to staged before
+   moving them to a project with app/network policies.
+  EOF
+
+  type = "TAG_TYPE_PROJECT"
+  tag_level_settings {
+    flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+    interface_ordering    = "INTERFACE_ORDERING_DISABLED"
   }
 }
 
