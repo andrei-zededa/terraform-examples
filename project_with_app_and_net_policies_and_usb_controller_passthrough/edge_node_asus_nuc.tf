@@ -1,7 +1,13 @@
+variable "edge_node_asus_nuc_serial" {
+  type      = string
+  sensitive = true
+  default   = "S.........................."
+}
+
 resource "zedcloud_edgenode" "EDGE_NODE_ASUS_NUC" {
   name           = "GREYNUC01_X21537851_FROM_TF"
   title          = "GREYNUC01_X21537851_FROM_TF"
-  serialno       = "S.........................."
+  serialno       = var.edge_node_asus_nuc_serial
   onboarding_key = var.onboarding_key
   model_id       = zedcloud_model.ASUS_NUC_14_PRO_PLUS.id
   project_id     = zedcloud_project.PROJECT_1.id

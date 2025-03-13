@@ -262,6 +262,14 @@ resource "zedcloud_application" "ubuntu_3nic_usb_ctrl_pass" {
       privateip    = false
     }
 
+    interfaces {
+      directattach = true
+      name         = "usb_controller_maybe"
+      type         = "IO_TYPE_USB_CONTROLLER"
+      optional     = true
+      privateip    = false
+    }
+
     owner {
       email   = "help@zededa.com"
       user    = "Andrei Radu"

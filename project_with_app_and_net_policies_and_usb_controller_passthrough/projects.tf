@@ -200,12 +200,18 @@ resource "zedcloud_project" "PROJECT_1" {
         interfaces {
           intfname     = "usb_controller" # Must match the interface (environment name) in the edge application definition.
           intforder    = 4
-          netinstname = ""
+          netinstname  = ""
           directattach = true
           privateip    = false
           io {
-            name = "USB3" # Must match the *logical label* of the adapter (IO member) as defined in the model.
             type = "IO_TYPE_USB_CONTROLLER"
+            # Can select USB controller either based on *logical label* name defined
+            # in the model or on *tags* defined in the per-edge-node interfaces.
+            #
+            # name = "USB3" # Must match the *logical label* of the adapter (IO member) as defined in the model.
+            tags = {
+              "bundle" = "group11" # Must match the tag defined in a edge-node interface.
+            }
           }
         }
 
