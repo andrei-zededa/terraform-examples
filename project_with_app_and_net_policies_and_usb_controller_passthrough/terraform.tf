@@ -5,15 +5,12 @@ terraform {
       version = "3.2.3"
     }
 
-    # A locally built version of the Zedcloud TF provider needs to be copied as
-    # the $HOME/.terraform.d/plugins/localhost/zededa/zedcloud/$VERSION/linux_amd64/terraform-provider-zedcloud
-    # file (make user it's executable).
+    # A locally/custom built version of the Zedcloud TF provider needs to be
+    # copied as the $HOME/.terraform.d/plugins/localhost/zededa/zedcloud/$VERSION/linux_amd64/terraform-provider-zedcloud
+    # file (make sure it's executable).
     zedcloud = {
       source  = "localhost/zededa/zedcloud"
       version = "0.0.0-dev.fiximageupdate.2"
-      # version = "2.2.7-fix.app.policy.15th"
-      # version = "2.3.1-RC"
-      # version = "2.3.1-rc2.local.dev.7"
 
       # Public terraform provider release: https://registry.terraform.io/providers/zededa/zedcloud/latest/docs
       # source  = "zededa/zedcloud"

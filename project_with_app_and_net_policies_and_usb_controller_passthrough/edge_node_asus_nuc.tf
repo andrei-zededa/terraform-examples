@@ -11,7 +11,7 @@ resource "zedcloud_edgenode" "EDGE_NODE_ASUS_NUC" {
   onboarding_key = var.onboarding_key
   model_id       = zedcloud_model.ASUS_NUC_14_PRO_PLUS.id
   project_id     = zedcloud_project.PROJECT_1.id
-  # project_id = zedcloud_project.edge_nodes_to_be_deleted.id
+  # project_id = zedcloud_project.default.id
   # utype          = "AMD64"
   # The TF provider knows how to do 2 API requests if needed to set a
   # newly created edge node to ADMIN_STATE_ACTIVE.
@@ -56,7 +56,7 @@ resource "zedcloud_edgenode" "EDGE_NODE_ASUS_NUC" {
 
   interfaces {
     intf_usage = "ADAPTER_USAGE_APP_DIRECT"
-    intfname   = "USB3"
+    intfname   = "USB3" # Must match *logical label* of IO member defined in the model.
     cost       = 0
     tags = {
       "bundle" = "group11"
@@ -74,7 +74,7 @@ resource "zedcloud_edgenode" "EDGE_NODE_ASUS_NUC" {
     #   - ADAPTER_USAGE_DISABLED: Adapter disabled, for future use
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
     cost       = 0
-    netname    = zedcloud_network.edge_node_as_dhcp_client.name
+    netname    = zedcloud_network.default_ipv4_dhcp_client.name
     tags = {
       # Any string key/value pair should work here.
       net_intf_first = "true"
@@ -101,48 +101,3 @@ resource "zedcloud_edgenode" "EDGE_NODE_ASUS_NUC" {
 
   tags = {}
 }
-
-#resource "zedcloud_network_instance" "nuc_ni_local_nat" {
-#  name      = "greynuc_ni_local_nat"
-#  title     = "greynuc_ni_local_nat"
-#  kind      = "NETWORK_INSTANCE_KIND_LOCAL"
-#  type      = "NETWORK_INSTANCE_DHCP_TYPE_V4"
-#  device_id = zedcloud_edgenode.EDGE_NODE_ASUS_NUC.id
-#
-#  port           = "eth0"
-#  device_default = false 
-#
-#  tags = {
-#    ni_local_nat = "true"
-#  }
-#}
-#
-#resource "zedcloud_network_instance" "nuc_ni_local_switch" {
-#  name      = "greynuc_local_switch"
-#  title     = "greynuc_local_switch"
-#  kind      = "NETWORK_INSTANCE_KIND_SWITCH"
-#  type      = "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED"
-#  device_id = zedcloud_edgenode.EDGE_NODE_ASUS_NUC.id
-#
-#  port           = ""
-#  device_default = false
-#
-#  tags = {
-#    ni_local_switch = "true"
-#  }
-#}
-#
-#resource "zedcloud_network_instance" "nuc_ni_internal" {
-#  name      = "greynuc_ni_internal"
-#  title     = "greynuc_ni_internal"
-#  kind      = "NETWORK_INSTANCE_KIND_LOCAL"
-#  type      = "NETWORK_INSTANCE_DHCP_TYPE_V4"
-#  device_id = zedcloud_edgenode.EDGE_NODE_ASUS_NUC.id
-#
-#  port           = ""
-#  device_default = false
-#
-#  tags = {
-#    network = "ni_internal"
-#  }
-#}

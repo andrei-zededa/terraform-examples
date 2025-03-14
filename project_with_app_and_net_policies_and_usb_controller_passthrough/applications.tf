@@ -48,21 +48,6 @@ resource "zedcloud_application" "ubuntu_3nic_test_bbbb" {
       target      = "Disk"
     }
 
-    #     images {
-    #       volumelabel = "volume_color_red"
-    #       cleartext   = true
-    #       drvtype     = "HDD"
-    #       imageformat = "QCOW2"
-    #       # imageid     = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.id
-    #       # imagename   = zedcloud_image.ubuntu_24_04_with_modbus_disk_999MB.name
-    #       # maxsize     = "10485760"
-    #       mountpath   = "/data"
-    #       ignorepurge = false
-    #       preserve    = true
-    #       readonly    = false
-    #       target      = "Disk"
-    #     }
-
     interfaces {
       directattach = false
       name         = "app_eth0"
@@ -266,6 +251,10 @@ resource "zedcloud_application" "ubuntu_3nic_usb_ctrl_pass" {
       directattach = true
       name         = "usb_controller_maybe"
       type         = "IO_TYPE_USB_CONTROLLER"
+      # `optional = true` means that when an edge-app-instance is created using
+      # this application, the edge-app-instance can skip specifying this interface
+      # in which case the edge-app-instance will be started successfully but this
+      # will be missing.
       optional     = true
       privateip    = false
     }

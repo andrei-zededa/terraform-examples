@@ -34,7 +34,6 @@ resource "zedcloud_edgenode" "EDGE_NODES" {
   serialno       = each.value.serial_number
   onboarding_key = var.onboarding_key
   model_id       = each.value.model_id
-  # project_id     = zedcloud_project.edge_nodes_staging.id
   project_id = zedcloud_project.PROJECT_1.id
   # utype          = "AMD64"
   # The TF provider knows how to do 2 API requests if needed to set a
